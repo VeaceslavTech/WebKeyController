@@ -1,0 +1,92 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+    <link rel="stylesheet" href="../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <style type="text/css">
+        body > div > section {
+            margin: auto;
+            margin-top: 10%;
+        }
+        body > div > section > div > div:nth-child(1) > div.col-md-6 > div
+        {
+            background: ghostwhite;
+            border-bottom-width: medium;
+        }
+        body > div > section > div
+        {
+            background: ghostwhite;
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/af-2.3.3/b-1.5.6/cr-1.5.0/rr-1.2.4/sl-1.3.0/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/af-2.3.3/b-1.5.6/cr-1.5.0/rr-1.2.4/sl-1.3.0/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var table = $('#example').DataTable( {
+                "language": {
+                    "lengthMenu": " _MENU_ Einträge pro Seite anzeigen",
+                    "zeroRecords": "Keine Einträge",
+                    "info": "Seite Nummer _PAGE_ von _PAGES_",
+                    "infoEmpty": "Keine Einträge",
+                    "infoFiltered": "(Gefiltert von _MAX_ einträgen)",
+                    "search": "Suche ",
+                    "paginate": {
+                        "first":      "Erste",
+                        "last":       "Letzte",
+                        "next":       "Nächste Seite",
+                        "previous":   "Vorige Seite"
+                    }
+                }
+            } );
+            $('#example tbody').on( 'click', 'tr', function () {
+                $(this).toggleClass('selected');
+            } );
+
+            $('#button').click( function () {
+                var id_list = $.map(table.rows('.selected').nodes(), function (item) {
+                    return $(item).data("id");
+                });
+            } );
+        } );
+    </script>
+    <title>User Reservierungen</title>
+<body>
+<h1>Reservierungen Übersicht</h1>
+
+<div class="container">
+    <section layout:fragment="content">
+        <table id="example" class ="table">
+            <thead>
+            <tr>
+                <th>Status</th>
+                <th>Reservierungsnummer</th>
+                <th>Schlüsselnummer</th>
+                <th>Zimmerbezeichnung</th>
+               <!--- <th>Abholen</th>
+                <th>Retournieren</th>
+                --->
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="r : ${reservierunglist}">
+                <td th:text="${r.schluessel.verfuegbarkeit}"></td>
+                <td th:text="${r.id}"></td>
+                <td th:text="${r.schluessel.id}"></td>
+                <td th:text="${r.schluessel.zimmerbezeichnung}"></td>
+                <!---
+                <td><a class="btn btn-primary" th:href="@{/reservierung/abholen/{id}(id=${r.id})}">Abholen</a></td>
+                <td><a class="btn btn-primary" th:href="@{/reservierung/retournieren/{id}(id=${r.id})}">Retournieren</a></td>
+                --->
+            </tr>
+
+            </tbody>
+        </table>
+        <p><a th:href="@{/reservierung/neueReservierung/{id}(id=${user.id})}" class="btn btn-primary">Schluessel Reservieren</a></p>
+        <p><a th:href="@{/home/home}" class="btn btn-secondary">Home</a></p>
+
+    </section>
+</div>
+</body>
+</head>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+    <style type="text/css">
+        body{
+            background-color: ghostwhite;
+        }
+        #button
+        {
+            margin:2%;
+            margin-left:43%;
+        }
+        #form
+        {
+            margin-left:30%;
+        }
+        body > div > section > form > div > div:nth-child(1) > label
+        {
+            margin: 2%;
+            margin-left:7%;
+            font-size: larger;
+        }
+        body > div > section > form > div > div:nth-child(2) > label
+        {
+            margin: 2%;
+            margin-left:3%;
+            font-size: larger;
+        }
+        #beginn_datum
+        {
+            width: 35%;
+        }
+        #beginn_zeit
+        {
+            width:35%;
+        }
+        #abgeschlossen_datum
+        {
+         width:35%;
+        }
+        #abgeschlossen_zeit
+        {
+            width:35%;
+        }
+        #name
+        {
+            width:35%;
+        }
+
+        </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/af-2.3.3/b-1.5.6/cr-1.5.0/rr-1.2.4/sl-1.3.0/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/dt-1.10.18/af-2.3.3/b-1.5.6/cr-1.5.0/rr-1.2.4/sl-1.3.0/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            //----------------- Tabelle Inizialisieren ---------------------------------------------------------------
+            var table = $('#example').DataTable( {
+                "language": {
+                    "lengthMenu": " _MENU_ Einträge pro Seite anzeigen",
+                    "zeroRecords": "Keine Einträge",
+                    "info": "Seite Nummer _PAGE_ von _PAGES_",
+                    "infoEmpty": "Keine Einträge",
+                    "infoFiltered": "(Gefilter von _MAX_ einträgen)",
+                    "search": "Suche ",
+                    "paginate": {
+                        "first":      "Erste",
+                        "last":       "Letzte",
+                        "next":       "Nächste Seite",
+                        "previous":   "Vorige Seite"
+                    }
+                }
+            } );
+            //------------------ Click auf die Tabelle zum Auswählen-------------------------------------------
+            $("#example tr").click(function() {
+                $(this).addClass('selected').siblings().removeClass('selected');
+                var value = $(this).find('td:last').text();
+                    var eid = document.getElementById("schluessel_select");
+                    for (var i = 0; i < eid.options.length; ++i)
+                    {
+                        if (eid.options[i].text === value)
+                            eid.options[i].selected = true;
+                    }
+                });
+//---------------------------Heute als AnfangsDatum------------------------------------------------------
+            var b = new Date();
+            document.getElementById("beginn_datum").valueAsDate = b;
+            var time = new Date().getTime();
+            document.getElementById("beginn_zeit").val(time);
+            var tomorrow = new Date();
+            tomorrow.setDate(b.getDate()+1);
+            document.getElementById("abgeschlossen_datum").valueAsDate=tomorrow;
+            document.getElementById("abgeschlossen_zeit").val(time);
+        } );
+    </script>
+    <link rel="stylesheet" href="../../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Neue Reservierung</title>
+
+<body style="background: ghostwhite">
+<section layout:fragment="content">
+    <h1>Neue Reservierung,  <span th:utext="${userName}"></span></h1>
+    </br>
+    </br>
+    <table id="example" class="table table-hover">
+        <thead>
+        <tr>
+
+            <th scope="col">Zimmerbezeichnung</th>
+            <th scope="col">Verfügbar</th>
+            <th scope="col">Schlüsselnummer</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${schluessellist}">
+            <td th:text="${s.zimmerbezeichnung}"></td>
+            <td th:text="${s.verfuegbarkeit}"></td>
+            <td th:text="${s.id}"></td>
+        </tbody>
+    </table>
+    <form id="form_eingabe" th:action="@{/reservierung/neueReservierung}" th:object="${reservierung}" method="post">
+    <div class="container-fluid" style="margin-left: 30%;margin-bottom: 15%;">
+            <div class="form-group">
+                <label id ="status_lb"th:for="status_enum">Status</label>
+                <select id="status" th:field="*{status_enum}" >
+                    <option th:value="${status_geplant}"
+                            th:text="${status_geplant.name}">
+                    </option>
+                </select>
+            </div>
+        <div class="form-group">
+            <select id="schluessel_select" th:field="*{schluessel}">
+                <option th:each="s : ${schluessellist}"
+                        th:value="${{s}}"
+                        th:text="${s.id}">
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="beginn_datum">Beginnt am</label>
+            <input type="date" id ="beginn_datum" class="form-control" th:field="*{beginnt_datum}">
+            <input type="time" id="beginn_zeit" class="form-control" th:field="*{beginn_zeit}" >
+        </div>
+        <div class="form-group">
+            <label for="abgeschlossen_datum">Endet am</label>
+            <input type="date" id ="abgeschlossen_datum"class="form-control" th:field="*{abgeschlossen_datum}" >
+            <input type="time" id="abgeschlossen_zeit" class="form-control" th:field="*{abgeschlossen_zeit}">
+        </div>
+            </br>
+            <input type="submit" class="btn btn-primary" value="Add Reservierung">
+        <div class="alert alert-info" role="alert" th:if="${msg}" th:utext="${msg}">
+            <a href="/reservierung" th:href="@{/reservierung/reservierungen/{id}(id=${user.id})}" class="btn btn-secondary">Cancel</a>
+
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+
+                            <h4 class="modal-title" id="myModalLabel">Öffentliche Räume</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col">Schlüssel reservieren</div>
+                                            <div class="col"><a th:href="@{/reservierung/neueReservierung/{id}(id=${user.id})}" class="btn btn-danger">Zur Reservierung</a></div>
+                                            <div class="w-100"></div>
+                                            <br>
+                                            <div class="col">Reservierung Ändern</div>
+                                            <div class="col"> <a th:href="@{/schluessel/retournieren/{id}(id=${user.privaterSchluessel.id})}" class="btn btn-danger">Zur Änderung</a></div>
+                                            <div class="w-100"></div>
+                                            <br>
+                                            <div class="col">Reservierungen anschauen</div>
+                                            <div class="col"> <a th:href="@{/reservierung/reservierungen/{id}(id=${user.id})}" class="btn btn-danger">Meine Reservierungen</a></div>
+                                            <div class="w-100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+    </div>
+    </form>
+    </div>
+</section>
+</body>
+</html>

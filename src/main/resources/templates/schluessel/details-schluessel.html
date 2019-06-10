@@ -1,0 +1,64 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+
+    <link rel="stylesheet" href="../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <STYLE type="text/css">
+        div.container-fluid {
+            width: 80%;
+            background-color:gray();
+            padding: 3%;
+            color: black;
+        }
+        div.row
+        {
+            border: 1px solid #dee2e6 !important;
+        }
+        div.col
+        {
+            font-size: larger;
+        }
+        h1
+        {
+            color:green;
+        }
+        h3
+        {
+            alignment: left;
+            font-weight: bold;
+        }
+    </STYLE>
+    <meta charset="UTF-8">
+    <title>Schlüssel</title>
+<body>
+<div class="container">
+    <section layout:fragment="content">
+        <div class="container-fluid">
+            <h3>Details</h3>
+            <div class="row">
+                <div style="font-weight: bold" class="col">
+                    <p>Verfügbarkeit</p>
+                </div>
+                <div class="row">
+                    <div style="font-weight: bold" class="col">
+                        <p>Schluessel Verfügbarkeit:</p>
+                    </div>
+                    <th:block th:switch="${abholung.verfuegbarkeit}">
+                            <p th:case="${verfuegbar}">
+                            <p th:text="${abholung.verfuegbarkeit}"></p>
+                            <p th:case="${entnohmen}"><p th:text="${entnommen_zeit}"></p>
+                            </th:block>
+                        </div>
+                    </div>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <div class="alert alert-info" role="alert" th:if="${msg}" th:utext="${msg}">
+                    </div>
+                </div>
+            </div>
+        <a th:href="@{/reservierung/reservierungen/{id}(id=${user.id})}" class="btn btn-success">Meine Reservierungen</a>
+        </div>
+    </section>
+</div>
+</body>
+</html>

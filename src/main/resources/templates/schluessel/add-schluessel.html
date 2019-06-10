@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+    <link rel="stylesheet" href="../../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Neuer Schlüssel</title>
+<body>
+<section layout:fragment="content">
+    <h1>Neuer Schlüssel</h1>
+    </br>
+    </br>
+    <div class="container-fluid">
+        <form  th:action="@{/schluessel/neuerSchluessel}" th:object="${schluessel}" method="post">
+            <div class="form-group">
+                <label>Verfügbarkeit</label>
+                <select th:field="*{verfuegbarkeit}">
+                    <option th:each="v : ${verfuegbarkeitliste}"
+                            th:value="${v}"
+                            th:text="${v.name}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="zimmer">Zimmerbezeichnung</label>
+                <input type="text" class="form-control" th:field="*{zimmerbezeichnung}" id="zimmer" placeholder="Text z.b. B105">
+            </div>
+            </br>
+            <input type="submit" class="btn btn-primary" value="Add Schluessel">
+            <a href="/schluessel" th:href="@{/schluessel}" class="btn btn-secondary">Cancel</a>
+        </form>
+
+    </div>
+</section>
+</body>
+</html>

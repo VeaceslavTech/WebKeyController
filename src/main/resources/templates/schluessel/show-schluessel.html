@@ -1,0 +1,39 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+    <link rel="stylesheet" href="../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Schlüssel</title>
+<body>
+<h1>Schlüssel Übersicht</h1>
+
+<div class="container">
+    <section layout:fragment="content">
+        <table class ="table">
+            <thead>
+            <tr>
+                <th>Verfuegbar</th>
+                <th>Schlüsselnummer</th>
+                <th>Zimmerbezeichnung</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="s : ${schluessellist}">
+                <td th:text="${s.verfuegbarkeit}"></td>
+                <td th:text="${s.id}"></td>
+                <td th:text="${s.zimmerbezeichnung}"></td>
+                <td> </td>
+                <td><a class="btn btn-primary" th:href="@{reservierung/update/{id}(id=${s.id})}">Edit</a></td>
+                <td><a class="btn btn-danger" th:href="@{reservierung/delete/{id}(id=${s.id})}">Delete</a></td>
+            </tr>
+
+            </tbody>
+        </table>
+        <p><a href="/schluessel/neuerSchluessel/">Neuer Schlüssel</a></p>
+
+    </section>
+</div>
+</body>
+</head>
+</html>

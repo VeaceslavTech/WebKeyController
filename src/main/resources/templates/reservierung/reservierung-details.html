@@ -1,0 +1,88 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+
+    <link rel="stylesheet" href="../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <STYLE type="text/css">
+        div.container-fluid {
+            width: 80%;
+            margin: auto;
+            margin-top: 8%;
+            background-color:gray();
+            padding: 3%;
+            color: black;
+        }
+        div.row
+        {
+            border: 1px solid #dee2e6 !important;
+        }
+        div.col
+        {
+            font-size: larger;
+            border-width: medium;
+            border: 1px solid #dee2e6 !important;
+        }
+        h1
+        {
+            color:green;
+        }
+        h3
+        {
+            alignment: left;
+            font-weight: bold;
+        }
+    </STYLE>
+    <meta charset="UTF-8">
+    <title>Schlüssel</title>
+<body>
+
+<div class="container">
+    <section layout:fragment="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="alert alert-info" role="alert" th:if="${msg}" th:utext="${msg}">
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Details</h3>
+                <div class="row">
+                    <div style="font-weight: bold" class="col">
+                        <p>Reservierungsstatus:</p>
+                    </div>
+                    <div class="col">
+                        <p th:text="${abholung.status_enum}"></p>
+                    </div>
+                </div>
+                    <div class="row">
+                        <div style="font-weight: bold" class="col">
+                            <p>Reservierungsnummer:</p>
+                        </div>
+                        <div class="col">
+                            <p th:text="${abholung.id}"></p>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div style="font-weight: bold" class="col">
+                                <p>Für das Zimmer:</p>
+                            </div>
+                            <div class="col">
+                                <p th:text="${abholung.schluessel.zimmerbezeichnung}"></p>
+                            </div>
+                        </div>
+                            <div class="row">
+                                <div style="font-weight: bold" class="col">
+                                    <p>Schluessel Verfügbarkeit:</p>
+                                </div>
+                                <div class="col">
+                                    <p th:text="${entnommen_zeit}"></p>
+                                </div>
+                            </div>
+            </div>
+        <a th:href="@{/reservierung/reservierungen/{id}(id=${user.id})}"class="btn btn-success">Meine Reservierungen</a>
+    </section>
+</div>
+</body>
+</head>
+</html>

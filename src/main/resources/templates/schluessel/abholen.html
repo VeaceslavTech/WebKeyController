@@ -1,0 +1,66 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+
+    <link rel="stylesheet" href="../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <STYLE type="text/css">
+        div.container-fluid {
+            width: 80%;
+            background-color:gray();
+            padding: 3%;
+            color: black;
+        }
+        div.row
+        {
+            border: 1px solid #dee2e6 !important;
+        }
+        div.col
+        {
+            font-size: larger;
+        }
+        h1
+        {
+            color:green;
+        }
+        h3
+        {
+            alignment: left;
+            font-weight: bold;
+        }
+    </STYLE>
+    <meta charset="UTF-8">
+    <title>Schlüssel</title>
+<body>
+<div class="container">
+    <section layout:fragment="content">
+        <div class="container-fluid">
+            </div>
+            <h3>Details</h3>
+            <div class="row">
+                <div style="font-weight: bold" class="col">
+                    <p>Schluessel Verfügbarkeit:</p>
+                </div>
+                <div style="font-weight: bold" class="col">
+                    <p>Status: </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p th:text="${abholung.verfuegbarkeit}"></p>
+                </div>
+                <div class="col">
+                    <p th:text="${entnohmen}"></p>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <div class="alert alert-info" role="alert" th:if="${msg}" th:utext="${msg}">
+                </div>
+            </div>
+        </div>
+        <p><a th:href="@{/home/home}" class="btn btn-secondary">Home</a></p>
+</div>
+</section>
+</div>
+</body>
+</html>
