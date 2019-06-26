@@ -22,7 +22,8 @@ public class Reservierungservice
     @Transactional(readOnly = false)
     public Reservierung createReservierung(@NotNull @Valid Reservierung reservierung) {
 
-        if(reservierung.getBeginnt_datum().before(reservierung.getAbgeschlossen_datum())&&(reservierung.getAbgeschlossen_datum().after(reservierung.getBeginnt_datum()))) {
+        if(reservierung.getBeginnt_datum().before(reservierung.getAbgeschlossen_datum())
+                &&(reservierung.getAbgeschlossen_datum().after(reservierung.getBeginnt_datum()))) {
             return reservierungRepository.save(reservierung);
         }
         else
