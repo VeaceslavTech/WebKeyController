@@ -82,8 +82,8 @@ public class BenutzerController
         ModelAndView model = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
-        model.addObject("userName", user.getFirstName() + " " + user.getLastName());
-        model.addObject("user",user);
+        //model.addObject("userName", user.getFirstName() + " " + user.getLastName());
+        //model.addObject("user",user);
         model.setViewName("/admin/home");
         return model;
     }

@@ -56,6 +56,7 @@ public class Schluessel extends AbstractBaseDomain<Long>
 
     @OneToOne(fetch = FetchType.LAZY)
     @Getter
+    @Setter
     private User user_key;
     @Getter
     @Setter

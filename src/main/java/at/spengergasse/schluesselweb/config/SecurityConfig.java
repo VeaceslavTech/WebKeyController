@@ -34,8 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String USERS_QUERY = "select email, password, active from user where email=?";
     private final String ROLES_QUERY = "select u.email, r.role from user u inner join user_role ur on (u.id = ur.user_id) inner join role r on (ur.role_id=r.id) where u.email=?";
 
-    @Autowired
-    private LoggingAccessDeniedHandler accessDeniedHandler;
 
 
     @Override
@@ -61,8 +59,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/forgot-password**", "/login*", "/reset-password**").permitAll()
-                .antMatchers("/home/**").access("hasRole('USER')")
-                .antMatchers("/admin/**").access("hasRole('ADMIN')")
                  .and().csrf().disable()
                 .formLogin().loginPage("/login").failureUrl("/login?error=true")
                 .successHandler(customSuccessHandler)
@@ -72,9 +68,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
                 .permitAll()
+                .and().csrf()
                 .and()
-                .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler);
+                .exceptionHandling().accessDeniedPage("/Access_Denied");
+
     }
 
 

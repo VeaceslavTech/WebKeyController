@@ -2,6 +2,7 @@ package at.spengergasse.schluesselweb.service;
 
 import at.spengergasse.schluesselweb.domain.*;
 import at.spengergasse.schluesselweb.persistence.PasswordResetTokenRepository;
+import at.spengergasse.schluesselweb.persistence.Schluesselrepository;
 import at.spengergasse.schluesselweb.persistence.UserRepository;
 import at.spengergasse.schluesselweb.persistence.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class UserService {
     @Autowired
     private PasswordResetTokenRepository passwordTokenRepository;
     @Autowired
-    private SessionRegistry sessionRegistry;
+    private Schluesselrepository schluesselrepository;
 
     public static final String TOKEN_INVALID = "invalidToken";
     public static final String TOKEN_EXPIRED = "expired";
@@ -57,12 +58,15 @@ public class UserService {
     public void saveUser(@NotNull @Valid User user) {
         Schluessel schluessel = new Schluessel();
         schluessel.setZimmerbezeichnung("Eigener_Schlüssel");
+        schluessel.setVerfuegbarkeit(Verfuegbarkeit.VERFUEGBAR);
+        schluesselrepository.save(schluessel);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
         user.setPrivaterSchluessel(schluessel);
         Role userRole = roleRepository.findByRole("USER");
-        user.addRole(userRole);
-        userRepository.save(user);
+                user.addRole(userRole);
+                userRepository.save(user);
+        schluessel.setUser_key(user);
     }
     public List<Reservierung> findListbyEmail(String email)
     {
