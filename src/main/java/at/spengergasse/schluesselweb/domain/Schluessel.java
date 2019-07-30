@@ -1,5 +1,6 @@
 package at.spengergasse.schluesselweb.domain;
 
+import at.spengergasse.schluesselweb.foundation.MotorController;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,7 +21,6 @@ public class Schluessel extends AbstractBaseDomain<Long>
 
     @OneToOne(mappedBy = "schluessel")
     private Fach fach;
-
     @Getter
     @Setter
     @Column(name = "zimmerbezeichnung")
@@ -32,12 +32,12 @@ public class Schluessel extends AbstractBaseDomain<Long>
             orphanRemoval = true
     )
     private List<Reservierung> reservierungList = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Getter
     @Setter
     @Column(name = "verfuegbar")
     private Verfuegbarkeit verfuegbarkeit;
-
     @Column(name = "abgeholt_am")
     @Getter
     @Setter
@@ -55,9 +55,20 @@ public class Schluessel extends AbstractBaseDomain<Long>
     private LocalTime retourniert_zeit;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "default_user_id")
     @Getter
     private User user_key;
+    @Getter
+    @Setter
+    @Column(name = "pos_y")
+    private String pos_y;
+    @Getter
+    @Setter
+    @Column(name = "pos_x")
+    private String pos_x;
+    @Getter
+    @Setter
+    @Column(name ="schluessel_nr")
+    private int schluessel_nr;
 
 
 
@@ -72,7 +83,7 @@ public class Schluessel extends AbstractBaseDomain<Long>
     }
     @Builder
     public Schluessel(Date retourniert_datum,Date abgeholt_datum,LocalTime retourniert_zeit, LocalTime abgeholt_zeit,String zimmerbezeichnung,
-                      Fach fach,Integer schuessel_nr,Verfuegbarkeit verfuegbarkeit,List<Reservierung> reservierungList)
+                      Verfuegbarkeit verfuegbarkeit,List<Reservierung> reservierungList,Fach fach,int schluessel_nr,String pos_x,String pos_y)
     {
 
         this.retourniert_datum = retourniert_datum;
@@ -80,9 +91,12 @@ public class Schluessel extends AbstractBaseDomain<Long>
         this.retourniert_zeit = retourniert_zeit;
         this.abgeholt_zeit = abgeholt_zeit;
         this.zimmerbezeichnung = zimmerbezeichnung;
-        this.fach = fach;
         this.verfuegbarkeit = verfuegbarkeit;
         this.reservierungList = reservierungList;
+        this.fach = fach;
+        this.schluessel_nr = schluessel_nr;
+        this.pos_x = pos_x;
+        this.pos_y = pos_y;
     }
 
     public String schluesselabholenprivat()

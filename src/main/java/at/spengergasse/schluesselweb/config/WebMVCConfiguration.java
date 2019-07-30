@@ -1,14 +1,24 @@
 package at.spengergasse.schluesselweb.config;
+import at.spengergasse.schluesselweb.service.MyUserDetailsService;
 import at.spengergasse.schluesselweb.service.validator.PasswordMatchesValidator;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import nz.net.ultraq.thymeleaf.decorators.strategies.GroupingStrategy;
+import org.hibernate.SessionFactory;
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.ViewResolver;
@@ -24,6 +34,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.springframework.context.MessageSource;
 
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
@@ -31,10 +43,14 @@ import java.util.Properties;
 public class WebMVCConfiguration implements WebMvcConfigurer,ApplicationContextAware {
 
     private ApplicationContext applicationContext;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private DataSource dataSource;
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
@@ -93,11 +109,11 @@ public class WebMVCConfiguration implements WebMvcConfigurer,ApplicationContextA
         registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars/");
     }
 
-    /* @Bean
+     @Bean
       public SessionFactory sessionFactory(@Qualifier("entityManagerFactory") EntityManagerFactory emf) {
           return emf.unwrap(SessionFactory.class);
       }
-      */
+
     private Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
@@ -119,13 +135,6 @@ public class WebMVCConfiguration implements WebMvcConfigurer,ApplicationContextA
         return new PasswordMatchesValidator();
     }
 
- /*  @Bean
-    @ConditionalOnMissingBean(RequestContextListener.class)
-    public RequestContextListener requestContextListener() {
-        return new RequestContextListener();
-    }
-
-    */
 
     @Override
     public Validator getValidator() {
@@ -134,5 +143,19 @@ public class WebMVCConfiguration implements WebMvcConfigurer,ApplicationContextA
         return validator;
     }
 
+    @Bean
+    @Primary
+    public EntityManagerFactory entityManagerFactory() {
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(Boolean.TRUE);
+        vendorAdapter.setShowSql(Boolean.TRUE);
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan("at.spengergasse.schluesselweb.domain");
+        factory.setDataSource(dataSource);
+        factory.afterPropertiesSet();
+        factory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
+        return factory.getObject();
+    }
 
 }

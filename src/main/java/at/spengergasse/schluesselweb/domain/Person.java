@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -24,5 +24,5 @@ public abstract class Person extends  AbstractBaseDomain<Long>
     @Column(name = "Nachname")
     private String lastName;
     @Column(name = "Geburtsdatum")
-    private LocalDate birthdate;
+    private Date birthdate;
 }

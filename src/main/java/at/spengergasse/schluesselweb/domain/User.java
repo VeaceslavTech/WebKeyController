@@ -8,7 +8,9 @@ import org.jboss.aerogear.security.otp.api.Base32;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 @NoArgsConstructor
 @Entity
@@ -39,6 +41,7 @@ public class User extends Person implements MutualListSupport
         this.roles.add(role);
         return this;
     }
+    @Getter
     @Setter
     private int active;
 
@@ -51,9 +54,11 @@ public class User extends Person implements MutualListSupport
 
     @OneToOne(fetch = FetchType.LAZY
     ,mappedBy = "user_key")
+    @JoinColumn(name = "default_schluessel_id")
     @Getter
     @Setter
     private Schluessel privaterSchluessel;
+
     @Getter
     @Setter
     @Column(name = "reset_token")
@@ -64,8 +69,9 @@ public class User extends Person implements MutualListSupport
     @Setter
     private String secret;
 
+    private boolean isUsing2FA;
     @Builder
-    public User(String firstName, String lastName, LocalDate birthdate,
+    public User(String firstName, String lastName, Date birthdate,
                 List<Reservierung>reservierungList,List<Role>roles,Schluessel privaterSchluessel,String  resetToken) {
         super(firstName, lastName, birthdate);
         this.privaterSchluessel = privaterSchluessel;
@@ -73,8 +79,6 @@ public class User extends Person implements MutualListSupport
         Optional.ofNullable(reservierungList).ifPresent(lfl -> lfl.stream().forEach(this::addReservierung));
         this.secret = Base32.random();
         Optional.ofNullable(roles).ifPresent(lfl -> lfl.stream().forEach(this::addRole));
-
-
     }
     public User addReservierung(final Reservierung reservierung)
     {
@@ -89,5 +93,13 @@ public class User extends Person implements MutualListSupport
         Arrays.stream(reservierungs).forEach(this::addReservierung);
         return this;
     }
+    public boolean isUsing2FA() {
+        return isUsing2FA;
+    }
+
+    public void setUsing2FA(boolean isUsing2FA) {
+        this.isUsing2FA = isUsing2FA;
+    }
+
 
 }

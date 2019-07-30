@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,12 +13,15 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    @Autowired
+    CustomSuccessHandler customSuccessHandler;
 
     @Autowired
     private DataSource dataSource;
@@ -43,16 +47,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(bCryptPasswordEncoder);
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/forgot-password**", "/login*", "/reset-password**").permitAll()
-                .antMatchers("/home/**").hasAuthority("ADMIN").anyRequest()
-                .authenticated().and().csrf().disable()
+                .antMatchers("/home/**").access("hasRole('USER')")
+                .antMatchers("/admin/**").access("hasRole('ADMIN')")
+                 .and().csrf().disable()
                 .formLogin().loginPage("/login").failureUrl("/login?error=true")
-                .defaultSuccessUrl("/home/home")
+                .successHandler(customSuccessHandler)
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .and().logout()
@@ -62,8 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler);
-        http.authorizeRequests().antMatchers("/admin/**").hasAuthority("ADMIN").anyRequest();
     }
+
+
     @Bean
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();

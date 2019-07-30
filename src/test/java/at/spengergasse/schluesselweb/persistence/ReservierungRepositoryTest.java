@@ -26,8 +26,8 @@ class ReservierungRepositoryTest
     void ensureSavingReservierungWorksProperly()
     {
         //given
-        Fach f1 = Fach.builder().fach_nr(5).offen(false).build();
-        Schluessel s1 = Schluessel.builder().schuessel_nr(1).verfuegbarkeit(Verfuegbarkeit.VERFUEGBAR).zimmerbezeichnung("Testzimmer").fach(f1).build();
+        Fach f1 = Fach.builder().build();
+        Schluessel s1 = Schluessel.builder().verfuegbarkeit(Verfuegbarkeit.VERFUEGBAR).zimmerbezeichnung("Testzimmer").build();
         Reservierung r1 = Reservierung.builder()
                 .beginn_datum(Date.valueOf(LocalDate.of(2019,Month.APRIL,17))).schluessel(s1)
                 .build();

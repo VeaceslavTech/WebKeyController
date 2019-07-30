@@ -56,7 +56,7 @@ public class Reservierungcontroller {
         return model;
     }
     @GetMapping("/reservierungen/{id}")
-    public ModelAndView showReservierungTable() {
+    public ModelAndView showReservierungTable(@PathVariable Long id) {
         ModelAndView model = new ModelAndView();
         User user = getAuth();
         model.addObject("user",user);
@@ -136,7 +136,7 @@ public class Reservierungcontroller {
 
 
         @PostMapping("/update")
-        public String updateReservierung (long id, @Valid Reservierung reservierung, @Valid User user, BindingResult result, Model model) {
+        public String updateReservierung (long id, @Valid Reservierung reservierung, BindingResult result, Model model) {
             if (result.hasErrors()) {
                 return RETURN_UPDATE_PAGE;
             }

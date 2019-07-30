@@ -9,29 +9,37 @@ import javax.validation.constraints.NotNull;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
+
 
 @Entity(name = "Fach")
 public class Fach extends AbstractBaseDomain<Long>
 {
-    @NotNull
-    @Column(name = "Fach_Nr")
-    private int fach_nr;
-    @Column(name = "offen")
-    private boolean offen;
+    @Builder
+    public Fach(String posx,String posy,String fachnr,Verfuegbarkeit verfuegbarkeit)
+    {
+        setPos_x(posx);
+        setPos_y(posy);
+        setFachnr(fachnr);
+        setVerfuegbarkeit(verfuegbarkeit);
+    }
 
-    @OneToOne
+    @Column(name = "Fach_Nr")
+    private String fachnr;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "schluessel_id", nullable = false)
     private Schluessel schluessel;
 
-    @NotNull
     @ManyToOne(optional = false)
     private User user;
 
     @Column(name = "pos_x")
-    private int pos_x;
+    private String pos_x;
 
     @Column(name = "pos_y")
-    private int pos_y;
+    private String pos_y;
+
+    @Column(name="verfuegbarkeit")
+    private Verfuegbarkeit verfuegbarkeit;
 
 }

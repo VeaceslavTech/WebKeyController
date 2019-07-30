@@ -3,7 +3,7 @@ package at.spengergasse.schluesselweb.service;
 import at.spengergasse.schluesselweb.domain.*;
 import at.spengergasse.schluesselweb.persistence.PasswordResetTokenRepository;
 import at.spengergasse.schluesselweb.persistence.UserRepository;
-import at.spengergasse.schluesselweb.persistence.RoleRespository;
+import at.spengergasse.schluesselweb.persistence.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,7 +30,7 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private RoleRespository roleRespository;
+    private RoleRepository roleRepository;
     @Autowired
     private final UserRepository userRepository;
     @Autowired
@@ -55,15 +55,22 @@ public class UserService {
 
     @Transactional(readOnly = false)
     public void saveUser(@NotNull @Valid User user) {
+        Schluessel schluessel = new Schluessel();
+        schluessel.setZimmerbezeichnung("Eigener_Schlüssel");
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setActive(1);
-        Role userRole = roleRespository.findByRole("ADMIN");
+        user.setPrivaterSchluessel(schluessel);
+        Role userRole = roleRepository.findByRole("USER");
         user.addRole(userRole);
         userRepository.save(user);
     }
     public List<Reservierung> findListbyEmail(String email)
     {
         return userRepository.findByEmail(email).getReservierungList();
+    }
+    public List<Reservierung> findListbyId(Long id)
+    {
+        return userRepository.findById(id).get().getReservierungList();
     }
 
     @Transactional(readOnly = false)
@@ -81,7 +88,10 @@ public class UserService {
     }
 
 
-
+    public String errorMsg()
+    {
+        return "Beim erstellen des Users ist ein fehler Entstanden,bitte die Attribute nochmal überprüfen";
+    }
     @Transactional(readOnly = false)
     public void createPasswordResetTokenForUser() {
         final PasswordResetToken myToken = new PasswordResetToken();
@@ -108,42 +118,8 @@ public class UserService {
     }
 
 
-    public String generateQRUrl(User user) throws UnsupportedEncodingException {
-        return QR_PREFIX + URLEncoder.encode(String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s", APP_NAME, user.getEmail(), user.getSecret(), APP_NAME), "UTF-8");
-    }
 
-    public User updateUser2FA(boolean use2FA) {
-        final Authentication curAuth = SecurityContextHolder.getContext()
-                .getAuthentication();
-        User currentUser = (User) curAuth.getPrincipal();
-        currentUser = userRepository.save(currentUser);
-        final Authentication auth = new UsernamePasswordAuthenticationToken(currentUser, currentUser.getPassword(), curAuth.getAuthorities());
-        SecurityContextHolder.getContext()
-                .setAuthentication(auth);
-        return currentUser;
-    }
 
-    private boolean emailExists(final String email) {
-        return userRepository.findByEmail(email) != null;
-    }
-
-    public List<String> getUsersFromSessionRegistry() {
-        return sessionRegistry.getAllPrincipals()
-                .stream()
-                .filter((u) -> !sessionRegistry.getAllSessions(u, false)
-                        .isEmpty())
-                .map(o -> {
-                    if (o instanceof User) {
-                        return ((User) o).getEmail();
-                    } else {
-                        return o.toString();
-                    }
-                })
-                .collect(Collectors.toList());
 
     }
-
-
-
-}
 

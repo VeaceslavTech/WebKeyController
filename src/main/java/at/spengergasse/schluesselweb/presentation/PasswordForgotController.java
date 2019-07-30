@@ -55,6 +55,7 @@ public class PasswordForgotController {
         PasswordResetToken token = new PasswordResetToken();
         token.setToken(UUID.randomUUID().toString());
         token.setUser(user);
+        token.setExpiryDate(60);
         tokenRepository.save(token);
 
         at.spengergasse.schluesselweb.domain.Mail mail = new Mail();

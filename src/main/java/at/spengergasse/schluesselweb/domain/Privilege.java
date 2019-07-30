@@ -86,4 +86,5 @@ public class Privilege {
         builder.append("Privilege [name=").append(name).append("]").append("[id=").append(id).append("]");
         return builder.toString();
     }
+
 }
