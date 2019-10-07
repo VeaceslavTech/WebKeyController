@@ -45,9 +45,10 @@ public class User extends Person implements MutualListSupport
     @Setter
     private int active;
 
-    @OneToMany( mappedBy = "user", cascade=CascadeType.ALL)
+   /* @OneToMany( mappedBy = "user", cascade=CascadeType.ALL)
     private List<Fach> fachverlauf = new ArrayList<>();
 
+*/
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade=CascadeType.ALL)
     @Getter
     private List<Reservierung> reservierungList = new ArrayList<>();

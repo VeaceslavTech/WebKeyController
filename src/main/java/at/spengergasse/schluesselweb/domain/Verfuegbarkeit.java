@@ -9,9 +9,7 @@ public enum Verfuegbarkeit
 {
     VERFUEGBAR("Verfügbar"),
     RESERVIERT("Reserviert"),
-    ENTNOMMEN("Entnommen"),
-    LEER("Leer"),
-    VOLL("voll");
+    ENTNOMMEN("Entnommen");
 
     @Getter
 

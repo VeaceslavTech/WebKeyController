@@ -1,6 +1,5 @@
 package at.spengergasse.schluesselweb.domain;
 
-import at.spengergasse.schluesselweb.foundation.MotorController;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,6 +19,8 @@ public class Schluessel extends AbstractBaseDomain<Long>
 {
 
     @OneToOne(mappedBy = "schluessel")
+    @Getter
+    @Setter
     private Fach fach;
     @Getter
     @Setter
@@ -60,14 +61,6 @@ public class Schluessel extends AbstractBaseDomain<Long>
     private User user_key;
     @Getter
     @Setter
-    @Column(name = "pos_y")
-    private String pos_y;
-    @Getter
-    @Setter
-    @Column(name = "pos_x")
-    private String pos_x;
-    @Getter
-    @Setter
     @Column(name ="schluessel_nr")
     private int schluessel_nr;
 
@@ -96,8 +89,6 @@ public class Schluessel extends AbstractBaseDomain<Long>
         this.reservierungList = reservierungList;
         this.fach = fach;
         this.schluessel_nr = schluessel_nr;
-        this.pos_x = pos_x;
-        this.pos_y = pos_y;
     }
 
     public String schluesselabholenprivat()

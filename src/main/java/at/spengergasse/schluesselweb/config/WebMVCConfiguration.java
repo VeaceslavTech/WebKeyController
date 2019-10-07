@@ -1,4 +1,5 @@
 package at.spengergasse.schluesselweb.config;
+import at.spengergasse.schluesselweb.domain.MotorController;
 import at.spengergasse.schluesselweb.service.MyUserDetailsService;
 import at.spengergasse.schluesselweb.service.validator.PasswordMatchesValidator;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
@@ -142,6 +143,8 @@ public class WebMVCConfiguration implements WebMvcConfigurer,ApplicationContextA
         validator.setValidationMessageSource(messageSource);
         return validator;
     }
+    @Bean
+    public MotorController motorController(){ return new MotorController();}
 
     @Bean
     @Primary

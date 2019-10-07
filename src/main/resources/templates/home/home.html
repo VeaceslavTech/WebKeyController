@@ -3,10 +3,42 @@
       xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
 <head>
     <title>Home</title>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            //----------------- Tabelle Inizialisieren ---------------------------------------------------------------
+            var table = $('#example').DataTable( {
+                "language": {
+                    "lengthMenu": " _MENU_ Einträge pro Seite anzeigen",
+                    "zeroRecords": "Keine Einträge",
+                    "info": "Seite Nummer _PAGE_ von _PAGES_",
+                    "infoEmpty": "Keine Einträge",
+                    "infoFiltered": "(Gefilter von _MAX_ einträgen)",
+                    "search": "Suche ",
+                    "paginate": {
+                        "first":      "Erste",
+                        "last":       "Letzte",
+                        "next":       "Nächste Seite",
+                        "previous":   "Vorige Seite"
+                    }
+                }
+            } );
+            //------------------ Click auf die Tabelle zum Auswählen-------------------------------------------
+            $("#example tr").click(function() {
+                $(this).addClass('selected').siblings().removeClass('selected');
+                var value = $(this).find('td:last').text();
+                var eid = document.getElementById("schluessel_select");
+                for (var i = 0; i < eid.options.length; ++i)
+                {
+                    if (eid.options[i].text === value)
+                        eid.options[i].selected = true;
+                }
+            });
+        } );
+    </script>
     <style type="text/css">
         body > div > section > div > div
         {
-            margin-top: 14%;
             margin-left: 0%;
             height: 350px;
         }
@@ -34,6 +66,39 @@
         {
             margin-left: 6%;
         }
+        div.wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        body > div > section > div
+        {
+            background-color: #e9ecef;
+        }
+        body > div > section > div > h2
+        {
+            margin-top: 15%;
+            padding: 5%;
+        }
+        body > div > section > div > a
+        {
+            padding: 3%;
+        }
+        .list-group-item
+        {
+            justify-content: center;
+            display: flex;
+        }
+        body > div > section > div > div > div.left_block > ul > li:nth-child(4)
+        {
+            height: 64px;
+
+        }
+        body > div > section > div > div > div.left_block
+        {
+            width: 220px;
+        }
     </style>
 
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -45,91 +110,52 @@
 </head>
 <body>
 <section layout:fragment="content">
-<div class="container">
-    <div class="jumbotron">
+
+    <div class="container">
+
+
     <h2>Sehr geehrter <span th:utext="${userName}"></span>, das ist die Homepage.</h2>
 
-    </br>
-        <!-- Button trigger modal -->
-        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal1">
-            Eigener Schlüssel
-        </button>
-
-        <!-- Modal -->
-        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-
-                        <h4 class="modal-title" id="myModalLabel1">Eigener Schlüssel</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col">Ihr Schlüssel abholen</div>
-                                <div class="col"><a th:href="@{/schluessel/abholen/{id}(id=${user.privaterSchluessel.id})}" class="btn btn-danger">Zur Abholung</a></div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col">Ihr Schlüssel abgeben</div>
-                                <div class="col"> <a th:href="@{/schluessel/retournieren/{id}(id=${user.privaterSchluessel.id})}" class="btn btn-danger">Zur Abgabe
-                                </a>
-                                </div>
-                            </div>
-                            <br>
-                            <br>
-                            <div class="row">
-                                <div class="col">Status</div>
-                                <div class="col"><a th:text="${status}" style="color: black; border: black";></a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Zurück</button>
-                    </div>
-                    </form>
-                </div>
+        <div class="wrapper">
+            <div class="left_block">
+                <ul class="list-group">
+                    <li class="list-group-item active">Eigener Schlüssel</li>
+                    <li class="list-group-item"><a th:href="@{/schluessel/abholen/{id}(id=${user.privaterSchluessel.id})}" class="btn btn-danger">Zur Abholung</a></li>
+                    <li class="list-group-item"><a th:href="@{/schluessel/retournieren/{id}(id=${user.privaterSchluessel.id})}" class="btn btn-danger">Zur Abgabe</a></li>
+                    <li class="list-group-item">Status: <a th:text="${status}" style="color: black; border: black";></a></li>
+                </ul>
             </div>
+            <div class="right_block"></div>
+            <ul class="list-group">
+                <li class="list-group-item active">Öffentliche Räume</li>
+                <li class="list-group-item"><a th:href="@{/reservierung/neueReservierung/{id}(id=${user.id})}" class="btn btn-danger">Zur Reservierung</a></li>
+                <li class="list-group-item"> <a th:href="@{/schluessel/retournieren/{id}(id=${user.privaterSchluessel.id})}" class="btn btn-danger">Reservierung Ändern</a></li>
+                <li class="list-group-item"> <a th:href="@{/reservierung/reservierungen/{id}(id=${user.id})}" class="btn btn-danger">Meine Reservierungen</a></li>
+            </ul>
         </div>
 
-        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2">
-            Öffentliche Räume
-        </button>
-        <!-- Modal -->
-        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
 
-                        <h4 class="modal-title" id="myModalLabel">Öffentliche Räume</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="row">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col">Schlüssel reservieren</div>
-                                        <div class="col"><a th:href="@{/reservierung/neueReservierung/{id}(id=${user.id})}" class="btn btn-danger">Zur Reservierung</a></div>
-                                        <div class="w-100"></div>
-                                        <br>
-                                        <div class="col">Reservierung Ändern</div>
-                                        <div class="col"> <a th:href="@{/schluessel/retournieren/{id}(id=${user.privaterSchluessel.id})}" class="btn btn-danger">Zur Änderung</a></div>
-                                        <div class="w-100"></div>
-                                        <br>
-                                        <div class="col">Reservierungen anschauen</div>
-                                        <div class="col"> <a th:href="@{/reservierung/reservierungen/{id}(id=${user.id})}" class="btn btn-danger">Meine Reservierungen</a></div>
-                                        <div class="w-100"></div>
-                                    </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-            </div>
-        </div>
+        <table id="example" class="table table-hover">
+            <thead>
+            <tr>
+
+                <th scope="col">Zimmerbezeichnung</th>
+                <th scope="col">Verfügbar</th>
+                <th scope="col">Schlüsselnummer</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${schluessellist}">
+                <td th:text="${s.zimmerbezeichnung}"></td>
+                <td th:text="${s.verfuegbarkeit}"></td>
+                <td th:text="${s.id}"></td>
+            </tbody>
+        </table>
+
+
+
+
+
     <a th:href="@{/logout}">Ausloggen</a>
     </div>
     </div>

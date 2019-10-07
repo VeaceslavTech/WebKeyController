@@ -1,6 +1,7 @@
 package at.spengergasse.schluesselweb.presentation;
 
 import at.spengergasse.schluesselweb.domain.*;
+import at.spengergasse.schluesselweb.domain.MotorController;
 import at.spengergasse.schluesselweb.service.Schluesselservice;
 import at.spengergasse.schluesselweb.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class Reservierungcontroller {
         private final Reservierungservice reservierungservice;
         private final UserService userService;
         private final Schluesselservice schluesselservice;
+        public final  MotorController motorController;
         @GetMapping
         public String getReservierung(Model model)
         {
@@ -73,9 +75,10 @@ public class Reservierungcontroller {
             reservierung.setUser(user);
             reservierung.reserviereSchluessel(schluessel);
             reservierung.getSchluessel().setVerfuegbarkeit(Verfuegbarkeit.RESERVIERT);
-            if(reservierungservice.ueberpruefeUeberlappung(reservierung).isEmpty())
+            reservierungservice.createReservierung(reservierung);
+            /*if(reservierungservice.ueberpruefeUeberlappung(reservierung).isEmpty())
             {
-                reservierungservice.createReservierung(reservierung);
+
             }
             else
             {
@@ -84,6 +87,7 @@ public class Reservierungcontroller {
                 model.addAttribute("msg",msg);
                  return RETURN_ADD_USER;
             }
+            */
             if (result.hasErrors())
             {
                 return RETURN_ADD_USER;
@@ -120,6 +124,11 @@ public class Reservierungcontroller {
         model.addAttribute("abholung",abholung);
         model.addAttribute("entnommen_zeit", abholung.getSchluessel().getVerfuegbarkeit() + " AM " + abholung.getSchluessel().getAbgeholt_datum()+ " UM "+ abholung.getSchluessel().getAbgeholt_zeit().format(DateTimeFormatter.ISO_TIME));
         model.addAttribute("msg", msg);
+        try {
+            motorController.controlMotoren(true,abholung.getSchluessel().getFach());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return RETURN_DETAILS_PAGE;
         }
     @RequestMapping(value = "/retournieren/{id}")
@@ -127,6 +136,11 @@ public class Reservierungcontroller {
         User user = getAuth();
         Reservierung abholung = reservierungservice.findbyid(id);
         abholung.schluesselretournieren();
+        try {
+            motorController.controlMotoren(true,abholung.getSchluessel().getFach());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         reservierungservice.createReservierung(abholung);
         model.addAttribute("user",user);
         model.addAttribute("abholung",abholung);

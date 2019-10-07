@@ -5,9 +5,8 @@ import javax.validation.Valid;
 import at.spengergasse.schluesselweb.domain.Schluessel;
 import at.spengergasse.schluesselweb.domain.User;
 import at.spengergasse.schluesselweb.domain.Verfuegbarkeit;
-import at.spengergasse.schluesselweb.foundation.MotorController;
+import at.spengergasse.schluesselweb.service.Schluesselservice;
 import at.spengergasse.schluesselweb.service.UserService;
-import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +30,8 @@ public class BenutzerController
     private UserService userService;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private Schluesselservice schluesselservice;
 
 
 
@@ -178,6 +178,7 @@ public class BenutzerController
         ModelAndView model = new ModelAndView();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(auth.getName());
+        model.addObject("schluessellist",schluesselservice.findAlleAusserEigenen());
         model.addObject("userName", user.getFirstName() + " " + user.getLastName());
         model.addObject("user",user);
         if(user.getPrivaterSchluessel()!=null) {

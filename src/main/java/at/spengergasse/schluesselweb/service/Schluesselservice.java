@@ -2,10 +2,8 @@ package at.spengergasse.schluesselweb.service;
 
 import at.spengergasse.schluesselweb.domain.Fach;
 import at.spengergasse.schluesselweb.domain.Schluessel;
-import at.spengergasse.schluesselweb.foundation.FaecherMatrix;
-import at.spengergasse.schluesselweb.foundation.MotorController;
+import at.spengergasse.schluesselweb.domain.Verfuegbarkeit;
 import at.spengergasse.schluesselweb.persistence.Schluesselrepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +22,16 @@ import static java.lang.Integer.parseInt;
 public class Schluesselservice
 {
     private final Schluesselrepository schluesselrepository;
-    private FaecherMatrix faecherMatrix = new FaecherMatrix();
-
+    private final FaecherService faecherService;
     public Schluessel createSchluessel(@NotNull @Valid Schluessel schluessel)
     {
         return schluesselrepository.save(schluessel);
+
+    }
+
+    public Schluessel findeSchluesselnachFach(Fach fach)
+    {
+        return fach.getSchluessel();
 
     }
 
@@ -50,5 +53,28 @@ public class Schluesselservice
     public List<Schluessel> schluessellist()
     {
         return schluesselrepository.findAll();
+    }
+
+    @Transactional(readOnly = false)
+    public void initSchluesselundsetFach()
+    {
+        for(int i=0; i<9; i++)
+        {
+            Schluessel schluessel = new Schluessel();
+            Fach freiesfach = faecherService.getnaechstenFreienFach();
+            schluessel.setFach(freiesfach);
+            freiesfach.setSchluessel(schluessel);
+            freiesfach.setVerfuegbar(false);
+            if(i<5) {
+                schluessel.setZimmerbezeichnung("B.1" + i);
+            }
+            else
+            {
+                schluessel.setZimmerbezeichnung("A.2"+i);
+            }
+            schluessel.setVerfuegbarkeit(Verfuegbarkeit.VERFUEGBAR);
+            schluessel.setSchluessel_nr(i+1);
+            createSchluessel(schluessel);
+        }
     }
 }
