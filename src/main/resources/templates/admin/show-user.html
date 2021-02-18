@@ -1,0 +1,42 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+    <link rel="stylesheet" href="../webjars/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>User Übersicht</title>
+<h1>Schlüssel Übersicht</h1>
+
+<div class="container">
+    <section layout:fragment="content">
+        <table class ="table">
+            <thead>
+            <tr>
+                <th>Vorname</th>
+                <th>Nachname</th>
+                <th></th>
+                <th>Reservierungen</th>
+                <th>Aktiv</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr th:each="u : ${userList}">
+                <td th:text="${u.firstName}"></td>
+                <td th:text="${u.lastName}"></td>
+                <td th:text="${u.birthdate}"></td>
+                <td><a th:href="@{/reservierung/reservierungen/{id}(id=${u.id})}"class="btn btn-light">Reservierungen des Users</a></td>
+                <td>
+                <td th:text="${u.active}"></td>
+                </td>
+                <td><a class="btn btn-primary" th:href="@{/admin/update-user/{id}(id=${u.id})}">Bearbeiten</a></td>
+                <td><a class="btn btn-danger" th:href="@{/admin/delete/{id}(id=${u.id})}">Löschen</a></td>
+            </tr>
+
+            </tbody>
+        </table>
+        <p><a href="/admin/add-user/">Neuer User</a></p>
+
+    </section>
+</div>
+</body>
+</head>
+</html>

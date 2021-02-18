@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout.html}">
+<head>
+    <title>Home</title>
+    <style type="text/css">
+        body > div > section > div > div
+        {
+            margin-top: 14%;
+            margin-left: 0%;
+            height: 350px;
+        }
+        body > div > section > div > div > div:nth-child(3)
+        {    margin-bottom: 8%;}
+        body > div > section > div > div > a {
+            margin-left: 90%;
+        }
+        .my-popover-content {
+            display:none;
+        }
+        #myModal1 > div > div > div.modal-body > div > div:nth-child(6) > div:nth-child(1)
+        {
+            border-style: inset;
+            text-align: center;
+            font-size: x-large;
+            color: white;
+            background: darkslateblue;
+        }
+        body > div > section > div > div > button:nth-child(3)
+        {
+            margin-left: 27%;
+        }
+        body > div > section > div > div > h2
+        {
+            margin-left: 6%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.min.css">
+    <script type="text/javascript">
+    </script>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="container">
+        <div class="jumbotron">
+            <h2>Hallo,das ist die Administrierungsseite, hier kann man User Verwalten.</h2>
+            <a th:href="@{/admin/show-user}" style="    margin-left: 35%;
+    margin-top: 05%;" class="btn btn-primary">User Tabelle</a>
+            </br>
+            <a th:href="@{/admin/add-user}" style="    margin-left: 35%;
+    margin-top: 05%;" class="btn btn-success">User Anlegen</a>
+            <a th:href="@{/logout}">Ausloggen</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>
