@@ -4,8 +4,7 @@ package at.spengergasse.schluesselweb.domain;
 import at.spengergasse.schluesselweb.persistence.FaecherRepository;
 import at.spengergasse.schluesselweb.service.FaecherService;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Data
 public class RoboterPos {
